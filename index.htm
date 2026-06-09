@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>FortuneHolders | Holding Made Easy</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* =========================================
+           GLOBAL STYLES & PREMIUM DARK THEME
+           ========================================= */
+        :root {
+            --bg-main: #000000;
+            --bg-surface: #0a0a0a;
+            --bg-card: #111111;
+            --accent-color: #00df7e; /* Maintained the neon green we established */
+            --accent-hover: #00bf6b;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --border-color: rgba(255,255,255,0.08);
+            --font-main: 'Inter', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: var(--bg-main); color: var(--text-primary); font-family: var(--font-main); line-height: 1.6; overflow-x: hidden; }
+        a { text-decoration: none; color: var(--text-primary); transition: all 0.3s ease; }
+        a:hover { color: var(--accent-color); }
+        ul { list-style: none; }
+        img { max-width: 100%; height: auto; display: block; border-radius: 12px; }
+
+        /* --- NAVIGATION --- */
+        .navbar { 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 1.2rem 5%; background: transparent; 
+            position: absolute; 
+            top: 0; left: 0; width: 100%; z-index: 9999; 
+        }
+        .logo { font-size: 1.6rem; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+        .logo span { color: var(--accent-color); }
+        
+        .nav-links { display: flex; gap: 2.5rem; align-items: center; }
+        .nav-links a { font-size: 0.85rem; font-weight: 600; text-transform: uppercase; color: #d4d4d8; letter-spacing: 1px;}
+        .nav-links a:hover { color: #fff; }
+        .nav-actions { display: flex; align-items: center; gap: 1.5rem; }
+
+        /* Mobile Hamburger Icon */
+        .menu-toggle { display: none; flex-direction: column; cursor: pointer; gap: 5px; z-index: 10000; }
+        .menu-toggle span { display: block; width: 25px; height: 3px; background-color: #fff; border-radius: 3px; transition: 0.3s; }
+        .mobile-only { display: none; }
+
+        /* --- BUTTONS --- */
+        .btn-primary { 
+            background: transparent; color: #fff; padding: 0.8rem 2rem; 
+            border-radius: 50px; font-weight: 600; border: 1px solid rgba(255,255,255,0.2); 
+            cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; 
+            transition: all 0.3s ease; display: inline-block; 
+        }
+        .btn-primary:hover { background-color: var(--accent-color); border-color: var(--accent-color); color: #000; }
+
+        /* =========================================
+           EXACT MATCH HERO SECTION WITH FORTUNE CONTENT 
+           ========================================= */
+        .hero-container-outer {
+            background-color: #000000;
+            position: relative;
+            padding-bottom: 60px; 
+        }
+
+        .hero-rounded-box {
+            position: relative;
+            width: 100%;
+            height: 95vh;
+            min-height: 700px;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-top: none;
+            overflow: hidden;
+            background-color: #050505;
+        }
+
+        .hero-rounded-box iframe { 
+            position: absolute; top: 50%; left: 50%; 
+            width: 100vw; height: 56.25vw; min-height: 100%; min-width: 177.77vh; 
+            transform: translate(-50%, -50%); pointer-events: none; opacity: 0.35; 
+        }
+
+        .hero-overlay-dark { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            background: linear-gradient(to right, rgba(5,5,5,0.95) 20%, rgba(5,5,5,0.4) 100%);
+            display: flex; align-items: center; padding: 0 5%; z-index: 10;
+        }
+
+        .hero-content-left {
+            max-width: 1200px; width: 100%; margin: 0 auto; text-align: left; padding-top: 50px;
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        /* Status Badge - Matched to our Neon Green */
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            border: 1px solid var(--accent-color); color: var(--accent-color);
+            padding: 6px 12px; border-radius: 50px;
+            font-size: 0.6rem; font-weight: 800; letter-spacing: 1.5px;
+            margin-bottom: 2.5rem; text-transform: uppercase;
+        }
+        .hero-badge .dot {
+            width: 6px; height: 6px; background-color: var(--accent-color);
+            border-radius: 50%; box-shadow: 0 0 8px rgba(0, 223, 126, 0.6);
+        }
+
+        /* Main Typography */
+        .hero-title-new { 
+            font-size: clamp(3rem, 6vw, 6.5rem); font-weight: 900; 
+            line-height: 0.95; margin-bottom: 1.5rem; letter-spacing: -2px; color: #ffffff; text-transform: uppercase;
+        }
+        .hero-title-new .text-grey { color: #777777; }
+
+        .hero-desc-new {
+            font-size: 1.15rem; color: #9ca3af;
+            max-width: 500px; margin-bottom: 3rem; line-height: 1.6; font-weight: 400;
+        }
+
+        /* Action Buttons */
+        .hero-buttons-new { display: flex; gap: 1.2rem; margin-bottom: 4rem; }
+        
+        .btn-shop {
+            background: #ffffff; color: #000000;
+            padding: 1.1rem 2.2rem; border-radius: 50px;
+            font-weight: 800; font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase;
+            display: inline-flex; align-items: center; gap: 10px; transition: transform 0.2s;
+        }
+        .btn-shop:hover { transform: translateY(-3px); color: #000;}
+
+        .btn-learn {
+            background: rgba(10,10,10,0.6); color: #ffffff; border: 1px solid rgba(255,255,255,0.2);
+            padding: 1.1rem 2.2rem; border-radius: 50px; backdrop-filter: blur(10px);
+            font-weight: 800; font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .btn-learn:hover { background: rgba(255,255,255,0.1); border-color: #fff; color: #fff;}
+
+        /* Statistics Box */
+        .hero-stats-new {
+            display: inline-flex; border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px; padding: 1.5rem 2.5rem; gap: 3.5rem;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(15px);
+        }
+        .stat-col-new { display: flex; flex-direction: column; gap: 5px; position: relative; }
+        .stat-col-new:not(:last-child)::after {
+            content: ''; position: absolute; right: -1.75rem; top: 15%;
+            height: 70%; width: 1px; background: rgba(255,255,255,0.1);
+        }
+        .stat-val-new { font-size: 1.7rem; font-weight: 900; color: #ffffff; line-height: 1; letter-spacing: -0.5px;}
+        .stat-label-new { font-size: 0.6rem; color: #666666; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
+
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            color: #444444; font-size: 0.55rem; font-weight: 800; letter-spacing: 3px; z-index: 15;
+        }
+        .scroll-indicator::after { content: ''; width: 1px; height: 15px; background: #444444; }
+
+        /* Bottom Ticker Tape */
+        .hero-ticker {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 50px;
+            display: flex; align-items: center; background: transparent; overflow: hidden; padding: 0 5%;
+        }
+        .ticker-track {
+            display: flex; gap: 2rem; white-space: nowrap;
+            font-size: 0.65rem; font-weight: 800; letter-spacing: 2px; color: #333333; align-items: center;
+            text-transform: uppercase;
+        }
+        .ticker-track .text-white { color: #ffffff; }
+
+        /* Floating Cart Button - Matched to our Neon Green */
+        .floating-cart {
+            position: absolute; right: 3%; bottom: 5px;
+            width: 50px; height: 50px; background: var(--accent-color); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: #000; transition: transform 0.2s; z-index: 20; box-shadow: 0 0 20px rgba(0, 223, 126, 0.3);
+        }
+        .floating-cart:hover { transform: scale(1.1); color: #000;}
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* =========================================
+           REMAINING SECTIONS
+           ========================================= */
+        .section-container { padding: 6rem 5%; position: relative; background: var(--bg-surface); }
+        .section-bg-image { background-size: cover; background-position: center; background-attachment: fixed; position: relative; }
+        .section-bg-image::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5,5,5,0.95); }
+        .section-content { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; }
+        
+        .text-center { text-align: center; }
+        .mb-2 { margin-bottom: 2rem; }
+        .mb-4 { margin-bottom: 4rem; }
+        h2.section-title { font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; margin-bottom: 1.5rem; letter-spacing: -1px; }
+
+        /* --- PRODUCT LAYOUT --- */
+        .product-block { 
+            display: flex; flex-wrap: wrap; gap: 4rem; align-items: center; 
+            background: var(--bg-card); padding: 3rem; border-radius: 24px; 
+            border: 1px solid var(--border-color); margin-bottom: 4rem; 
+            transition: transform 0.3s ease;
+        }
+        .product-block:hover { border-color: rgba(0, 223, 126, 0.3); transform: translateY(-5px); }
+        .product-image { flex: 1 1 400px; position: relative; }
+        .product-sticker { position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); border: 1px solid var(--accent-color); color: var(--accent-color); padding: 8px 16px; font-size: 0.75rem; font-weight: 700; border-radius: 50px; z-index: 10; letter-spacing: 1px; }
+        .product-info { flex: 1 1 500px; }
+        .product-info h3 { font-size: 2.5rem; color: #fff; margin-bottom: 0.5rem; letter-spacing: -1px; }
+        .product-price { font-size: 2rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--accent-color); }
+        .product-price s { font-size: 1.2rem; color: var(--text-secondary); margin-right: 15px; }
+        .product-desc p, .product-desc li { color: var(--text-secondary); font-size: 1.05rem; }
+        .product-desc ul { margin-left: 1.5rem; margin-bottom: 1.5rem; }
+        .product-desc li { margin-bottom: 0.5rem; }
+
+        /* --- STATS ROW (Inner pages) --- */
+        .stats-row { 
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; 
+            text-align: center; margin: 4rem 0; padding: 3rem 0; 
+            border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .stats-row div { border-right: 1px solid rgba(255,255,255,0.05); }
+        .stats-row div:last-child { border-right: none; }
+        .stats-row h3 { font-size: 0.9rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-top: 0.5rem; }
+        .stats-row span { font-size: 4rem; font-weight: 800; color: #fff; line-height: 1; }
+
+        /* --- SERVICES CARDS --- */
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 3rem; }
+        .service-card { 
+            background: var(--bg-card); padding: 2.5rem; border-radius: 20px; 
+            border: 1px solid var(--border-color); transition: all 0.3s ease; text-align: left;
+        }
+        .service-card:hover { border-color: var(--accent-color); }
+        .service-card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 12px; margin-bottom: 1.5rem; }
+        .service-card h2 { font-size: 1.5rem; margin-bottom: 1rem; color: #fff; }
+        .service-card p { color: var(--text-secondary); margin-bottom: 2rem; font-size: 0.95rem; }
+
+        /* --- IMAGE ROWS & EMBEDS --- */
+        .image-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 4rem; }
+        .image-row img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 16px; border: 1px solid var(--border-color); }
+        .embeds-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-top: 2rem; }
+        .embeds-grid iframe { width: 100%; border-radius: 16px; border: 1px solid var(--border-color); }
+
+        /* --- FAQ --- */
+        .faq-container details { background: var(--bg-card); margin-bottom: 1rem; border-radius: 12px; border: 1px solid var(--border-color); transition: background 0.3s; }
+        .faq-container details[open] { border-color: var(--accent-color); }
+        .faq-container summary { padding: 1.5rem; font-weight: 600; cursor: pointer; list-style: none; font-size: 1.1rem; }
+        .faq-container summary::-webkit-details-marker { display: none; }
+        .faq-container p { padding: 0 1.5rem 1.5rem; color: var(--text-secondary); }
+
+        /* --- FOOTER --- */
+        .footer { background: #000000; padding: 5rem 5% 2rem; border-top: 1px solid var(--border-color); }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 4rem; margin-bottom: 4rem; }
+        .footer h3 { color: #fff; margin-bottom: 1.5rem; font-size: 1.2rem; }
+        .footer p, .footer a { color: var(--text-secondary); margin-bottom: 0.8rem; display: block; }
+        .footer a:hover { color: var(--accent-color); }
+
+        /* =========================================
+           MOBILE RESPONSIVENESS
+           ========================================= */
+        @media (max-width: 900px) {
+            .menu-toggle { display: flex; }
+            .nav-links { 
+                position: absolute; top: 100%; left: 0; width: 100%; 
+                background: #0a0a0a; flex-direction: column; 
+                padding: 2rem 5%; gap: 1.5rem; border-bottom: 1px solid var(--border-color);
+                display: none; align-items: flex-start;
+                box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            }
+            .nav-links.active { display: flex; }
+            .nav-actions { display: none; } 
+            .mobile-only { display: block; margin-top: 1rem; border-top: 1px solid var(--border-color); padding-top: 1rem; width: 100%; }
+
+            /* Hero Section Fixes for Mobile */
+            .hero-rounded-box { border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; min-height: 800px;}
+            .hero-content-left { padding-top: 80px; }
+            .hero-title-new { font-size: 3rem; letter-spacing: -1px; }
+            .hero-buttons-new { flex-direction: column; gap: 1rem; }
+            .btn-shop, .btn-learn { width: 100%; justify-content: center; }
+            .hero-stats-new { gap: 1.5rem; padding: 1.2rem 1.5rem; width: 100%; justify-content: space-between; }
+            .hero-ticker { display: none; }
+            
+            .section-container { padding: 4rem 5%; }
+            .product-block { flex-direction: column; gap: 2rem; padding: 1.5rem; }
+            .product-image { flex: 1 1 100%; width: 100%; }
+            .product-info { flex: 1 1 100%; }
+            
+            .stats-row { grid-template-columns: 1fr; gap: 3rem; padding: 2rem 0; }
+            .stats-row div { border-right: none; }
+            
+            .image-row { grid-template-columns: repeat(2, 1fr); }
+            .embeds-grid { grid-template-columns: repeat(2, 1fr); }
+            
+            .tradingview-container { height: 400px !important; }
+        }
+
+        @media (max-width: 480px) {
+            .embeds-grid { grid-template-columns: 1fr; }
+            .image-row { grid-template-columns: 1fr; }
+            .hero-stats-new { flex-direction: column; gap: 1rem; text-align: center; }
+            .stat-col-new:not(:last-child)::after { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo">FORTUNE<span>HOLDERS</span></div>
+        
+        <div class="menu-toggle" id="mobile-menu-btn">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        
+        <ul class="nav-links" id="nav-links-menu">
+            <li><a href="index.htm">Home</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="about-us.html">About Us</a></li>
+            <li><a href="available-shares.html">Available Shares</a></li>
+            <li><a href="client-testimonials.html">Testimonials</a></li>
+            
+            <li class="mobile-only">
+                <a href="cart.html" style="color: var(--accent-color); font-weight: 800;">🛒 Cart (0)</a>
+            </li>
+            <li class="mobile-only" style="margin-top: 0.5rem; border-top: none; padding-top: 0;">
+                <a href="account/login.html" style="color: var(--text-primary);">Account Login</a>
+            </li>
+        </ul>
+        
+        <div class="nav-actions">
+            <a href="cart.html" style="font-weight: 600;">🛒 Cart (0)</a>
+            <a href="account/login.html" class="btn-primary">Account</a>
+        </div>
+    </header>
+
+    <div class="hero-container-outer">
+        <div class="hero-rounded-box">
+            <iframe src="https://player.vimeo.com/video/418798039?background=1&dnt=1" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+            
+            <div class="hero-overlay-dark">
+                <div class="hero-content-left">
+                    <div class="hero-badge">
+                        <span class="dot"></span> LIVE MARKET UPDATES ACTIVE
+                    </div>
+                    
+                    <h1 class="hero-title-new">HOLDING MADE<br><span class="text-grey">EASY</span></h1>
+                    
+                    <p class="hero-desc-new">We believe in the transformative power of visionary ideas. Fortune & Fidelity Shares creates early-stage investment opportunities for private investors with a team of professionals.</p>
+                    
+                    <div class="hero-buttons-new">
+                        <a href="contact.html" class="btn-shop">GET STARTED NOW →</a>
+                        <a href="about-us.html" class="btn-learn">LEARN MORE</a>
+                    </div>
+                    
+                    <div class="hero-stats-new">
+                        <div class="stat-col-new">
+                            <span class="stat-val-new">5M+</span>
+                            <span class="stat-label-new">PORTFOLIOS</span>
+                        </div>
+                        <div class="stat-col-new">
+                            <span class="stat-val-new">89M+</span>
+                            <span class="stat-label-new">WITHDRAWALS</span>
+                        </div>
+                        <div class="stat-col-new">
+                            <span class="stat-val-new">100%</span>
+                            <span class="stat-label-new">RETURNS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="scroll-indicator">SCROLL</div>
+            </div>
+        </div>
+
+        <div class="hero-ticker">
+            <div class="ticker-track">
+                •   SECURE INVESTMENTS   •   FAST WITHDRAWALS   •   <span class="text-white">100% CAPITAL RETURNS</span>   •   GLOBAL REACH   •   24/7 SUPPORT   •   HIGH-YIELD PORTFOLIOS   •   FAST WITHDRAWALS   •
+            </div>
+        </div>
+
+        
+    </div>
+
+    <section class="section-container" style="padding: 4rem 5% 2rem; border-bottom: 1px solid var(--border-color);">
+        <div class="section-content">
+            <div class="tradingview-container" style="height: 550px; width: 100%; border-radius: 20px; overflow: hidden; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                <div class="tradingview-widget-container" style="height:100%;width:100%">
+                  <div class="tradingview-widget-container__widget" style="height:calc(100% - 32px);width:100%"></div>
+                  <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+                  {
+                  "autosize": true,
+                  "symbol": "NASDAQ:TSLA",
+                  "interval": "D",
+                  "timezone": "Etc/UTC",
+                  "theme": "dark",
+                  "style": "1",
+                  "locale": "en",
+                  "enable_publishing": false,
+                  "backgroundColor": "#121212",
+                  "gridColor": "#1e1e1e",
+                  "hide_top_toolbar": false,
+                  "hide_legend": false,
+                  "save_image": false,
+                  "watchlist": ["NASDAQ:TSLA", "NASDAQ:NVDA", "NASDAQ:AAPL", "NYSE:XOM"],
+                  "support_host": "https://www.tradingview.com"
+                }
+                  </script>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-container section-bg-image" style="background-image: url('pexels/30/30018096.jpeg');">
+        <div class="section-content text-center">
+            <h2 class="section-title">Fortune & Fidelity Shares is proud to stand as one of the nation’s premier financial planning firms.</h2>
+            <p class="mb-2" style="font-size: 1.15rem; color: var(--text-secondary); max-width: 900px; margin: 0 auto 1.5rem;">Our mission extends far beyond numbers and charts — we are committed to guiding you with clarity and confidence on your path toward lasting financial success.</p>
+            <p class="mb-2" style="font-size: 1.15rem; color: var(--text-secondary); max-width: 900px; margin: 0 auto 1.5rem;">We deliver personalized financial planning and investment management solutions, carefully designed around your unique circumstances, aspirations, and long-term objectives. Whether you are preparing for retirement, securing your family’s future, or seeking to diversify your portfolio, our strategies place your goals at the center of everything we do.</p>
+            <p class="mb-2" style="font-size: 1.15rem; color: var(--text-secondary); max-width: 900px; margin: 0 auto 1.5rem;">We are a dedicated team of seasoned professionals who combine deep expertise with an unwavering commitment to your success. We believe financial planning should be personal, transparent, and empowering — never overwhelming. That’s why we take a step-by-step approach, ensuring you feel fully informed, supported, and confident in every decision you make.</p>
+            <p style="font-size: 1.15rem; color: var(--text-secondary); max-width: 900px; margin: 0 auto;">Your financial future is our priority. Together, we will create strategies that not only provide security today, but also unlock new opportunities for tomorrow.</p>
+        </div>
+    </section>
+
+    <section class="section-container" style="background: var(--bg-surface);">
+        <div class="section-content text-center">
+            <h2 class="section-title">The Fields We Focus On</h2>
+            <div style="font-size: 1.2rem; line-height: 2.5; color: var(--text-primary); display: flex; flex-wrap: wrap; justify-content: center; gap: 15px 30px; margin-top: 2rem;">
+                <span>Agriculture & Technology <strong style="color: var(--accent-color);">✓</strong></span>
+                <span>Energy & Precious Metals <strong style="color: var(--accent-color);">✓</strong></span>
+                <span>Aerospace & Aviation <strong style="color: var(--accent-color);">✓</strong></span>
+                <span>Banking & Finance <strong style="color: var(--accent-color);">✓</strong></span>
+                <span>Consumer Goods <strong style="color: var(--accent-color);">✓</strong></span>
+                <span>Entertainment & Media <strong style="color: var(--accent-color);">✓</strong></span>
+                <span>Healthcare & Biotech <strong style="color: var(--accent-color);">✓</strong></span>
+                <span>Automotive & Transport <strong style="color: var(--accent-color);">✓</strong></span>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-container section-bg-image" style="background-image: url('pexels/14/14202792.jpeg');">
+        <div class="section-content">
+            
+            <div class="product-block">
+                <div class="product-image">
+                    <div class="product-sticker">FORD OFFER</div>
+                    <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-feb-9-2026-04_15_54-am-high.png" alt="SUPER BOWL">
+                </div>
+                <div class="product-info">
+                    <h3>SUPER BOWL</h3>
+                    <div class="product-price"><s>$145,600.00</s> $19,465.00</div>
+                    <div class="product-desc">
+                        <p>Super Bowl Share Investment gives investors exposure to the world’s biggest sporting event through a performance-driven model tied to viewership, advertising demand, media rights, and brand momentum surrounding the Super Bowl ecosystem.</p>
+                        <p>✅ <strong style="color:#fff;">Key Profit Drivers</strong></p>
+                        <ul>
+                            <li>Massive global audience drives premium advertising revenue and brand valuations</li>
+                            <li>Strong demand for Super Bowl–related sponsorships, media placements, and digital campaigns</li>
+                            <li>Seasonal surge effect: concentrated attention, spending, and engagement in a single high-impact event</li>
+                        </ul>
+                        <p>⚙️ <strong style="color:#fff;">Key Features</strong></p>
+                        <ul>
+                            <li>Investment theme: Event-driven, media and advertising economics</li>
+                            <li>Exposure to broadcast reach, brand partnerships, and consumer spending trends</li>
+                            <li>Benefits from recurring annual event with growing digital and international reach</li>
+                        </ul>
+                        <p>✨ <strong style="color:#fff;">In short:</strong> Super Bowl Share Investment captures the financial upside of the most valuable sports event in the world—appealing for investors seeking high-visibility, event-driven returns tied to media, marketing, and consumer attention.</p>
+                    </div>
+                    <a href="cart.html" class="btn-primary">Add to cart</a>
+                </div>
+            </div>
+
+            <div class="image-row">
+                <img src="pexels/32/321452.jpeg" alt="">
+                <img src="pexels/84/8442431.jpeg" alt="">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-16-2025-02_10_02-pm-high.png" alt="">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-16-2025-08_18_52-am-high.png" alt="">
+            </div>
+
+            <div class="product-block">
+                <div class="product-image">
+                    <div class="product-sticker">TSLA OFFER</div>
+                    <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-15-2025-10_34_12-am-high-nl7q9z.png" alt="TESLA">
+                </div>
+                <div class="product-info">
+                    <h3>TESLA</h3>
+                    <div class="product-price"><s>$150,000.00</s> $21,000.83</div>
+                    <div class="product-desc">
+                        <p>Tesla designs and builds <strong style="color:#fff;">electric vehicles, energy storage, and related software/services</strong> and trades on <strong style="color:#fff;">NASDAQ: TSLA</strong>.</p>
+                        <p>✅ <strong style="color:#fff;">Key Profits</strong></p>
+                        <ul>
+                            <li>Scale manufacturing and cost reduction aimed at margin expansion across vehicle programs.</li>
+                            <li>Growing <strong style="color:#fff;">energy storage</strong> deployments add a high-growth, recurring component.</li>
+                            <li>Software and feature monetization (e.g., driver-assist, connectivity) can improve lifetime economics.</li>
+                        </ul>
+                        <p>⚙️ <strong style="color:#fff;">Key Features</strong></p>
+                        <ul>
+                            <li><strong style="color:#fff;">Listing:</strong> NASDAQ <strong style="color:#fff;">TSLA</strong>.</li>
+                            <li>Vertical integration (batteries, software, charging) and a global factory footprint.</li>
+                        </ul>
+                        <p>✨ <strong style="color:#fff;">In short:</strong> Tesla offers a high-beta way to play EV adoption and grid-scale storage, with upside from software and energy services.</p>
+                    </div>
+                    <a href="cart.html" class="btn-primary">Add to cart</a>
+                </div>
+            </div>
+
+            <div class="image-row">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-17-2025-05_34_10-am-high.png" alt="">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-16-2025-12_53_29-pm-high.png" alt="">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-16-2025-12_14_44-pm-high.png" alt="">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-14-2025-09_18_31-am-high.png" alt="">
+            </div>
+
+            <div class="text-center mb-4">
+                <a href="available-shares.html" class="btn-primary" style="background-color: var(--accent-color); color:#000;">SEARCH FOR AVAILABLE SHARES</a>
+            </div>
+
+            <div class="product-block">
+                <div class="product-image">
+                    <div class="product-sticker">REDBULL OFFER</div>
+                    <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-oct-5-2025-05_38_48-pm-high.png" alt="RED BULL">
+                </div>
+                <div class="product-info">
+                    <h3>RED BULL</h3>
+                    <div class="product-price"><s>$110,000.70</s> $10,960.70</div>
+                    <div class="product-desc">
+                        <p>Red Bull (the beverage and motorsports group behind <strong style="color:#fff;">Oracle Red Bull Racing</strong>) is <strong style="color:#fff;">privately held</strong>—there is <strong style="color:#fff;">no public “Red Bull” stock</strong> to buy directly. Ownership is split between the Yoovidhya family and the Mateschitz estate but with fortune & fidelity Valora, you can easily be in possession of a share.</p>
+                        <p>✅ <strong style="color:#fff;">Key Profits</strong></p>
+                        <ul>
+                            <li>For F1 exposure: consider Liberty Media’s <strong style="color:#fff;">Formula One Group</strong> trackers (<strong style="color:#fff;">FWONA/FWONK</strong>).</li>
+                            <li>For energy-drink peers: look at <strong style="color:#fff;">Monster Beverage (MNST)</strong>.</li>
+                        </ul>
+                    </div>
+                    <a href="cart.html" class="btn-primary">Add to cart</a>
+                </div>
+            </div>
+
+            <div class="image-row">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-16-2025-07_54_51-am-high.png" alt="">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-16-2025-07_38_04-am-high.png" alt="">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-15-2025-11_33_09-am-high.png" alt="">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-15-2025-11_12_23-am-high.png" alt="">
+            </div>
+
+            <div class="image-row">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-15-2025-11_07_00-am-high.png" alt="">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-15-2025-10_34_12-am-high.png" alt="">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-15-2025-10_07_02-am-high.png" alt="">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-15-2025-10_04_19-am-high.png" alt="">
+            </div>
+
+            <div class="product-block">
+                <div class="product-image">
+                    <div class="product-sticker">AIRBUS OFFER NOW</div>
+                    <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-oct-5-2025-05_00_23-pm-high.png" alt="AIRBUS SHARE">
+                </div>
+                <div class="product-info">
+                    <h3>AIRBUS SHARE</h3>
+                    <div class="product-price"><s>$95,900.59</s> $21,375.59</div>
+                    <div class="product-desc">
+                        <p>Airbus gives investors exposure to one of the world’s leading aerospace companies. As a global manufacturer of commercial aircraft, helicopters, and defense systems—with a deep order backlog and high-margin services.</p>
+                        <p>✅ <strong style="color:#fff;">Key Profits</strong></p>
+                        <ul>
+                            <li>Potential long-term capital growth supported by a large, multi-year aircraft order backlog.</li>
+                            <li>Dividend income (subject to company policy and results).</li>
+                            <li>Exposure to resilient aftermarket/services revenue.</li>
+                        </ul>
+                        <p>✨ <strong style="color:#fff;">In short:</strong> Airbus shares combine durable demand, multi-year visibility, and services resilience.</p>
+                    </div>
+                    <a href="cart.html" class="btn-primary">Add to cart</a>
+                </div>
+            </div>
+
+            <div class="image-row">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-15-2025-09_58_04-am-high.png" alt="">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-15-2025-09_43_00-am-high.png" alt="">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-15-2025-09_48_42-am-high.png" alt="">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-15-2025-09_18_05-am-high.png" alt="">
+            </div>
+
+            <div class="product-block">
+                <div class="product-image">
+                    <div class="product-sticker">GE SPECIAL OFFER</div>
+                    <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-oct-5-2025-05_10_50-pm-high.png" alt="GENERAL ELECTRICITY">
+                </div>
+                <div class="product-info">
+                    <h3>GENERAL ELECTRICITY</h3>
+                    <div class="product-price"><s>$136,000.00</s> $13,450.55</div>
+                    <div class="product-desc">
+                        <p>Electricity can be produced from multiple sources—renewables (solar, wind, hydro, geothermal, biomass), nuclear, and thermal plants.</p>
+                        <p>✅ <strong style="color:#fff;">Key Profits (Investment Angle)</strong></p>
+                        <ul>
+                            <li>Long-term, contract-backed cash flows via <strong style="color:#fff;">PPAs/retail tariffs</strong></li>
+                            <li><strong style="color:#fff;">Low operating costs</strong> for renewables and potential carbon credits</li>
+                        </ul>
+                    </div>
+                    <a href="cart.html" class="btn-primary">Add to cart</a>
+                </div>
+            </div>
+
+            <div class="image-row">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-15-2025-09_20_34-am-high.png" alt="">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-15-2025-09_00_31-am-high.png" alt="">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-15-2025-08_53_01-am-high.png" alt="">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-15-2025-08_37_24-am-high.png" alt="">
+            </div>
+            
+            <div class="text-center mb-4">
+                <a href="available-shares.html" class="btn-primary" style="background-color: var(--accent-color); color:#000;">SEARCH FOR AVAILABLE SHARES</a>
+            </div>
+
+            <div class="product-block">
+                <div class="product-image">
+                    <div class="product-sticker">EMBRAER OFFER</div>
+                    <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-oct-5-2025-05_56_08-pm-high.png" alt="EMBRAER">
+                </div>
+                <div class="product-info">
+                    <h3>EMBRAER</h3>
+                    <div class="product-price"><s>$200,000.00</s> $20,190.27</div>
+                    <div class="product-desc">
+                        <p><strong style="color:#fff;">Embraer</strong> is a Brazilian aerospace manufacturer across <strong style="color:#fff;">Commercial Aviation, Executive Jets, and Defense</strong>.</p>
+                        <p>✅ <strong style="color:#fff;">Key Profits</strong></p>
+                        <ul>
+                            <li>Multi-year <strong style="color:#fff;">backlog</strong> supports production visibility.</li>
+                            <li>Balanced exposure to commercial recovery, executive-jet demand, and defense programs.</li>
+                        </ul>
+                    </div>
+                    <a href="cart.html" class="btn-primary">Add to cart</a>
+                </div>
+            </div>
+
+            <div class="image-row">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-15-2025-08_14_48-am-high.png" alt="">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-14-2025-07_09_00-pm-high.png" alt="">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-14-2025-07_04_16-pm-high.png" alt="">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-14-2025-05_01_45-pm-high.png" alt="">
+            </div>
+
+            <div class="product-block">
+                <div class="product-image">
+                    <div class="product-sticker">F1 OFFER</div>
+                    <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-oct-5-2025-05_32_55-pm-high.png" alt="FORMULA ONE">
+                </div>
+                <div class="product-info">
+                    <h3>FORMULA ONE</h3>
+                    <div class="product-price"><s>$200,000.00</s> $25,000.99</div>
+                    <div class="product-desc">
+                        <p>Investors can get exposure to Formula 1®—the commercial rights holder of the sport—through <strong style="color:#fff;">Liberty Media’s Formula One Group tracking stocks</strong>.</p>
+                        <p>✅ <strong style="color:#fff;">Key Profits</strong></p>
+                        <ul>
+                            <li>Potential for long-term capital growth tied to <strong style="color:#fff;">media rights, race-promotion fees, and sponsorships</strong>.</li>
+                        </ul>
+                    </div>
+                    <a href="cart.html" class="btn-primary">Add to cart</a>
+                </div>
+            </div>
+
+            <div class="image-row">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-14-2025-04_29_38-pm-high.png" alt="">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-14-2025-04_24_24-pm-high.png" alt="">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-14-2025-04_21_46-pm-high.png" alt="">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-14-2025-04_18_22-pm-high.png" alt="">
+            </div>
+
+            <div class="product-block">
+                <div class="product-image">
+                    <div class="product-sticker">EXXON OFFER</div>
+                    <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-oct-5-2025-06_05_07-pm-high.png" alt="EXXON MOBIL">
+                </div>
+                <div class="product-info">
+                    <h3>EXXON MOBIL</h3>
+                    <div class="product-price"><s>$100,000.00</s> $18,700.34</div>
+                    <div class="product-desc">
+                        <p>Exxon Mobil is an <strong style="color:#fff;">integrated energy</strong> company across <strong style="color:#fff;">upstream (oil & gas)</strong>, <strong style="color:#fff;">downstream (refining)</strong>, and <strong style="color:#fff;">chemicals</strong>.</p>
+                        <p>✅ <strong style="color:#fff;">Key Profits</strong></p>
+                        <ul>
+                            <li>Free-cash-flow leverage to commodity cycles and refining margins</li>
+                        </ul>
+                    </div>
+                    <a href="cart.html" class="btn-primary">Add to cart</a>
+                </div>
+            </div>
+
+            <div class="image-row">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-14-2025-04_10_20-pm-high.png" alt="">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-14-2025-04_07_18-pm-high.png" alt="">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-14-2025-04_02_12-pm-high.png" alt="">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-14-2025-04_39_24-pm-high.png" alt="">
+            </div>
+
+            <div class="product-block">
+                <div class="product-image">
+                    <div class="product-sticker">RR OFFER</div>
+                    <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-oct-5-2025-06_17_20-pm-high.png" alt="ROLLS-ROYCE">
+                </div>
+                <div class="product-info">
+                    <h3>ROLLS-ROYCE</h3>
+                    <div class="product-price"><s>$250,000.00</s> $25,390.66</div>
+                    <div class="product-desc">
+                        <p>Rolls-Royce designs, manufactures, and services <strong style="color:#fff;">aircraft engines</strong> (civil & defense) plus <strong style="color:#fff;">power systems</strong>. A large installed base drives long-term <strong style="color:#fff;">services revenue</strong> tied to engine flying hours.</p>
+                        <p>✅ <strong style="color:#fff;">Key Profits</strong></p>
+                        <ul>
+                            <li>Recovery in wide-body flying and shop-visit cycles boosts services</li>
+                        </ul>
+                    </div>
+                    <a href="cart.html" class="btn-primary">Add to cart</a>
+                </div>
+            </div>
+
+            <div class="image-row">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-14-2025-12_14_03-pm-high.png" alt="">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-14-2025-12_06_56-pm-high.png" alt="">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-14-2025-12_04_27-pm-high.png" alt="">
+                <img src="public/l/q/f/temp-eodgdxhuwogybdkxozbl/chatgpt-image-sep-14-2025-12_00_57-pm-high.png" alt="">
+            </div>
+
+            <div class="text-center mb-4">
+                <a href="contact.html" class="btn-primary" style="background-color: var(--accent-color); color:#000;">BUY NOW</a>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="section-container text-center" style="background: var(--bg-surface);">
+        <div class="section-content">
+            <h3 style="color: var(--accent-color); font-size: 1.8rem; line-height: 1.4; margin-bottom: 2rem;">Fortune & Fidelity Valora is more than a financial services firm. Our people are innovators and creative thinkers, leaders in defining investment strategies, and pioneers in developing cutting-edge technologies.</h3>
+            <p style="color: var(--text-secondary); font-size: 1.1rem; max-width: 800px; margin: 0 auto 4rem;">We are committed voices for diversity, trusted partners in local communities, and champions for our customers. You'll find a culture here that empowers you to grow and do your best work as we work together to build better financial futures for everyone.</p>
+
+            <div class="embeds-grid">
+                <iframe src="https://cdn.iframe.ly/api/iframe?language=en-US&url=https%3A%2F%2Fwww.amazon.com%2F&key=9aabbd1bbcaf6bfeb280d671ed0cf266" height="140" frameborder="0"></iframe>
+                <iframe src="https://cdn.iframe.ly/api/iframe?language=en-US&url=https%3A%2F%2Fwww.airbnb.com%2F&key=9aabbd1bbcaf6bfeb280d671ed0cf266" height="140" frameborder="0"></iframe>
+                <iframe src="https://cdn.iframe.ly/api/iframe?language=en-US&url=https%3A%2F%2Fwww.bookingmood.com%2Fen-US&key=9aabbd1bbcaf6bfeb280d671ed0cf266" height="140" frameborder="0"></iframe>
+                <iframe src="https://cdn.iframe.ly/api/iframe?language=en-US&url=https%3A%2F%2Fwww.youtube.com%2F&key=9aabbd1bbcaf6bfeb280d671ed0cf266" height="140" frameborder="0"></iframe>
+                <iframe src="https://cdn.iframe.ly/api/iframe?language=en-US&url=https%3A%2F%2Fopen.spotify.com%2F&key=9aabbd1bbcaf6bfeb280d671ed0cf266" height="140" frameborder="0"></iframe>
+                <iframe src="https://cdn.iframe.ly/api/iframe?language=en-US&url=https%3A%2F%2Fmusic.apple.com%2Fus%2Fnew&key=9aabbd1bbcaf6bfeb280d671ed0cf266" height="140" frameborder="0"></iframe>
+                <iframe src="https://cdn.iframe.ly/api/iframe?language=en-US&url=https%3A%2F%2Fwww.twitch.tv%2F&key=9aabbd1bbcaf6bfeb280d671ed0cf266" height="140" frameborder="0"></iframe>
+                <iframe src="https://cdn.iframe.ly/api/iframe?language=en-US&url=https%3A%2F%2Fwww.gofundme.com%2F&key=9aabbd1bbcaf6bfeb280d671ed0cf266" height="140" frameborder="0"></iframe>
+            </div>
+
+            <div class="services-grid">
+                <div class="service-card">
+                    <img src="pexels/84/8441861.jpeg" alt="">
+                    <h2>Retirement Planning</h2>
+                    <p>Plan today, live tomorrow. With tailored retirement strategies focused on security, we help you build a future that lasts.</p>
+                    <a href="contact.html" class="btn-primary" style="padding: 0.5rem 1.5rem; font-size: 0.85rem;">Learn More</a>
+                </div>
+                <div class="service-card">
+                    <img src="pexels/59/5922675.jpeg" alt="">
+                    <h2>Investment Management</h2>
+                    <p>With our expert guidance, you can unlock the full potential of your investments and build lasting wealth securely and confidently.</p>
+                    <a href="contact.html" class="btn-primary" style="padding: 0.5rem 1.5rem; font-size: 0.85rem;">Learn More</a>
+                </div>
+                <div class="service-card">
+                    <img src="pexels/71/7174110.jpeg" alt="">
+                    <h2>Estate Planning</h2>
+                    <p>Protect your hard-earned assets and ensure a smooth, structured transfer of wealth to the people who matter most.</p>
+                    <a href="contact.html" class="btn-primary" style="padding: 0.5rem 1.5rem; font-size: 0.85rem;">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-container">
+        <div class="section-content text-center mb-4">
+            <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem; color: #fff;"><strong>For More Info: Call @ +1 (310) 800-2000</strong></h3>
+            <h3 style="font-size: 1.5rem; color: var(--accent-color);"><strong>Email: info@fortunevalorashares.org</strong></h3>
+        </div>
+        <div class="section-content">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2948.844208006322!2d-71.0587240845348!3d42.355507579187!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89e37085a6914bb7%3A0xc3c6b2ff8db15bc8!2sBoston%2C%20MA%2002108%2C%20USA!5e0!3m2!1sen!2s!4v1655000000000!5m2!1sen!2s" width="100%" height="400" style="border:0; border-radius: 20px; filter: invert(90%) hue-rotate(180deg);" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+    </section>
+
+    <section class="section-container" style="background: var(--bg-surface);">
+        <div class="section-content">
+            <h2 class="section-title text-center">Frequently Asked Questions</h2>
+            <div class="faq-container" style="max-width: 800px; margin: 0 auto;">
+                <details open>
+                    <summary>Is my investment secured with Fortune&Fidelity Shares? <span style="float:right; color:var(--accent-color);">+</span></summary>
+                    <p><strong>Yes — at Fortune & Fidelity Shares, the security of your investment is our highest priority. We combine transparent practices, diversified portfolios, and industry-standard safeguards to ensure your funds are managed responsibly.</strong></p>
+                </details>
+                <details>
+                    <summary>What investment options does FortuneHolders offer? <span style="float:right; color:var(--accent-color);">+</span></summary>
+                    <p><strong>Secure a spot for the available share offers and stand a chance to earn extra profits</strong></p>
+                </details>
+                <details>
+                    <summary>How fast can i receive my withdrawals? <span style="float:right; color:var(--accent-color);">+</span></summary>
+                    <p><strong>At Fortune & Fidelity Shares, we prioritize fast and reliable withdrawals to give our investors peace of mind. Once a withdrawal request is submitted, our team processes it promptly, and funds are typically made available within 24–72 business hours, depending on the chosen payment method and banking network.</strong></p>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-grid">
+            <div>
+                <h3>Stay Connected</h3>
+                <a href="https://facebook.com/profile.php?id=61580523176548&mibextid=wwXIfr&mibextid=wwXIfr" target="_blank">Facebook</a>
+                <a href="https://discord.gg/+13106288472" target="_blank">Discord</a>
+                <a href="contact.html">Message Us</a>
+            </div>
+            <div>
+                <h3>OUR SERVICES</h3>
+                <p><em>Agriculture & Technology✓</em></p>
+                <p><em>Energy & Precious Metals✓</em></p>
+                <p><em>Aerospace & Aviation✓</em></p>
+                <p><em>Banking & Finance✓</em></p>
+                <p><em>Consumer Goods & Lifestyle✓</em></p>
+                <p><em>Entertainment & Media✓</em></p>
+                <p><em>Healthcare & Biotech✓</em></p>
+                <p><em>Automotive & Transport✓</em></p>
+            </div>
+            <div>
+                <h3>Our Presence</h3>
+                <p style="color: var(--text-secondary); line-height: 1.6;">With more than 198,000 associates working tirelessly to meet the needs of our customers, Our global presence now spans across almost all the countries in the world.</p>
+                <div style="display:flex; gap:15px; margin-top:1.5rem;">
+                    <a href="http://binance.com" target="_blank" style="padding:10px 15px; border:1px solid rgba(255,255,255,0.2); border-radius:50px;">B</a>
+                    <a href="http://youtube.com" target="_blank" style="padding:10px 15px; border:1px solid rgba(255,255,255,0.2); border-radius:50px;">Y</a>
+                    <a href="http://newsnow.co" target="_blank" style="padding:10px 15px; border:1px solid rgba(255,255,255,0.2); border-radius:50px;">N</a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center" style="border-top: 1px solid var(--border-color); padding-top: 2rem; color: var(--text-secondary); font-size: 0.9rem;">
+            <strong>© 2025 Fortune&Fidelity Valora Share Holders</strong>
+        </div>
+    </footer>
+
+    <script type="text/javascript">
+        // Mobile menu toggle logic
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            var navLinks = document.getElementById('nav-links-menu');
+            navLinks.classList.toggle('active');
+        });
+
+        // Smartsupp Live Chat script
+        var _smartsupp = _smartsupp || {};
+        _smartsupp.key = '46c5b8fff3d3cd4d84801f74469a49d87cbafddd';
+        window.smartsupp||(function(d) {
+            var s,c,o=smartsupp=function(){ o._.push(arguments)};o._=[];
+            s=d.getElementsByTagName('script')[0];c=d.createElement('script');
+            c.type='text/javascript';c.charset='utf-8';c.async=true;
+            c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s);
+        })(document);
+    </script>
+
+</body>
+</html>
